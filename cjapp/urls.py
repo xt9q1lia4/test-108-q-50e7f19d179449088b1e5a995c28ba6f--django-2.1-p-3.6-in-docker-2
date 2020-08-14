@@ -15,10 +15,21 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.urls import path, include
+
+from api.v1.friendship.views import FriendshipView, FriendsView, FriendSuggestionsView
+from api.v1.users.views import UserCreateView
 from restapi.views import *
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    path('suggestions/<for_user>', FriendSuggestionsView.as_view(), name="get_suggested_friends"),
+    path('api/', include(('api.urls', "api"), namespace="api")),
+    path('create', UserCreateView.as_view(), name="create_user"),
+    path('add/<from_user>/<to_user>', FriendshipView.as_view(), name="add_friends"),
+    path('friendRequests/<to_user>', FriendshipView.as_view(), name="get_pending_requests"),
+    path('friends/<to_user>', FriendsView.as_view(), name="get_friends"),
+
     url(r'', index),
 ]
